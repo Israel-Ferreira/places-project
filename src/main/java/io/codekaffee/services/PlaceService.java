@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import io.codekaffee.dto.PlaceDTO;
 import io.codekaffee.exceptions.EmptyArgumentException;
@@ -42,9 +43,12 @@ public class PlaceService {
         return placeRepository.deleteById(id);
     }
 
-    public void createPlace(PlaceDTO place){
+
+    @Transactional
+    public Place createPlace(PlaceDTO place){
         Place newPlace = new Place(place);
 
         placeRepository.persist(newPlace);
+        return newPlace;
     }
 }
