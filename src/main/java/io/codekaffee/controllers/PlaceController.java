@@ -9,12 +9,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import io.codekaffee.dto.PlaceDTO;
 import io.codekaffee.models.Place;
+import io.codekaffee.models.StandardError;
 import io.codekaffee.services.PlaceService;
 
 @Path("/places")
@@ -61,6 +63,18 @@ public class PlaceController {
         return Response.ok(place).build();
     }
 
+
+    @GET
+    @Path("/search-by-name")
+    public Response getByName(@QueryParam("name") String name){
+        try {
+            Place place = placeService.getPlaceByName(name);
+            return Response.ok(place).build();
+        } catch (Exception e) {
+            StandardError error = new StandardError(e.getLocalizedMessage(), Status.NOT_FOUND.getStatusCode());
+            return Response.status(Status.NOT_FOUND).entity(error).build();
+        }
+    }
 
 
 }
