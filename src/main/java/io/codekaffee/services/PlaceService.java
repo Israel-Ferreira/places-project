@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 import io.codekaffee.dto.PlaceDTO;
 import io.codekaffee.exceptions.EmptyArgumentException;
+import io.codekaffee.exceptions.PlaceNotFoundException;
 import io.codekaffee.models.Place;
 import io.codekaffee.repositories.PlaceRepository;
 
@@ -26,7 +27,13 @@ public class PlaceService {
     }
 
     public Place getById(Long id){
-        return placeRepository.findById(id);
+        Place place = placeRepository.findById(id);
+
+        if(place.equals(null)){
+            throw new PlaceNotFoundException();
+        }
+
+        return place;
     }
 
     public Place getPlaceByName(String name){

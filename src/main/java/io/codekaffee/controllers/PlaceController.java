@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import io.codekaffee.dto.PlaceDTO;
+import io.codekaffee.exceptions.PlaceNotFoundException;
 import io.codekaffee.models.Place;
 import io.codekaffee.models.StandardError;
 import io.codekaffee.services.PlaceService;
@@ -58,9 +59,16 @@ public class PlaceController {
 
     @GET
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getById(@PathParam("id") Long id){
-        Place place = placeService.getById(id);
-        return Response.ok(place).build();
+
+        try {
+            Place place = placeService.getById(id);
+            return Response.ok(place).build();
+        } catch (PlaceNotFoundException e) {
+            StandardError error = new StandardError(e.getLocalizedMessage(),Status.NOT_FOUND.getStatusCode());
+            return Response.status(Status.NOT_FOUND).entity(error).build();
+        }
     }
 
 
